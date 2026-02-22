@@ -1,0 +1,44 @@
+name: Calculator App CI
+
+on:
+  push:
+    branches: [ main, master, "claude/*" ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: JS 문법 검사
+        run: node --check calculator.js
+
+      - name: HTML 파일 확인
+        run: |
+          if [ -f index.html ]; then
+            echo "✅ index.html 파일 존재 확인"
+          else
+            echo "❌ index.html 파일 없음"
+            exit 1
+          fi
+
+      - name: CSS 파일 확인
+        run: |
+          if [ -f style.css ]; then
+            echo "✅ style.css 파일 존재 확인"
+          else
+            echo "❌ style.css 파일 없음"
+            exit 1
+          fi
+
+      - name: 빌드 성공
+        run: echo "✅ 모든 검사 통과! 계산기 앱이 정상입니다."
