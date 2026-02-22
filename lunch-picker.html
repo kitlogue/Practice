@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 점심 뭐 먹지?</title>
+  <style>
+    /* ===== 전체 레이아웃 ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      background: #f5f5f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 48px 40px;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
+    }
+
+    /* ===== 제목 ===== */
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: #aaa;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 26px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 40px;
+    }
+
+    /* ===== 결과 표시 박스 ===== */
+    .result-box {
+      background: #fafafa;
+      border: 2px solid #eee;
+      border-radius: 16px;
+      padding: 28px 20px;
+      margin-bottom: 32px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.3s;
+    }
+
+    .result-box.highlight {
+      border-color: #ff6b35;
+      background: #fff8f5;
+    }
+
+    .result-text {
+      font-size: 32px;
+      font-weight: 700;
+      color: #333;
+      transition: all 0.3s;
+    }
+
+    .result-text.placeholder {
+      font-size: 16px;
+      color: #ccc;
+      font-weight: 400;
+    }
+
+    /* ===== 버튼 ===== */
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 16px;
+      background: #ff6b35;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.03em;
+    }
+
+    .btn:hover {
+      background: #e85d2a;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    /* ===== 메뉴 목록 표시 ===== */
+    .menu-list-toggle {
+      margin-top: 28px;
+      font-size: 13px;
+      color: #bbb;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .menu-list-toggle:hover {
+      color: #888;
+    }
+
+    .menu-list {
+      display: none;
+      margin-top: 16px;
+      text-align: left;
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+
+    .menu-list.open {
+      display: block;
+    }
+
+    .menu-list p {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .menu-list ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .menu-list ul li {
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <p class="title">Lunch Picker</p>
+  <h1 class="subtitle">오늘 점심 뭐 먹지? 🍽️</h1>
+
+  <div class="result-box" id="resultBox">
+    <p class="result-text placeholder" id="resultText">버튼을 눌러보세요</p>
+  </div>
+
+  <button class="btn" onclick="pickMenu()">랜덤 메뉴 고르기</button>
+
+  <div class="menu-list-toggle" onclick="toggleList()">
+    ▾ 전체 메뉴 목록 보기
+  </div>
+  <div class="menu-list" id="menuList"></div>
+</div>
+
+<script>
+  // ============================================================
+  //  메뉴 목록 — 원하는 메뉴를 자유롭게 추가하거나 삭제하세요!
+  //  형식: "메뉴 이름",  (마지막 항목 뒤 쉼표는 있어도 없어도 됩니다)
+  // ============================================================
+  const menus = [
+    "된장찌개",
+    "김치찌개",
+    "부대찌개",
+    "순두부찌개",
+    "삼겹살",
+    "제육볶음",
+    "비빔밥",
+    "냉면",
+    "칼국수",
+    "짜장면",
+    "짬뽕",
+    "탕수육",
+    "초밥",
+    "라멘",
+    "돈까스",
+    "파스타",
+    "피자",
+    "버거",
+    "샐러드",
+    "샌드위치",
+  ];
+  // ============================================================
+
+  let lastIndex = -1;
+
+  function pickMenu() {
+    if (menus.length === 0) {
+      document.getElementById('resultText').textContent = '메뉴가 없어요!';
+      return;
+    }
+
+    // 같은 메뉴가 연속으로 나오지 않도록 처리
+    let index;
+    do {
+      index = Math.floor(Math.random() * menus.length);
+    } while (menus.length > 1 && index === lastIndex);
+    lastIndex = index;
+
+    const resultText = document.getElementById('resultText');
+    const resultBox  = document.getElementById('resultBox');
+
+    resultText.className = 'result-text';
+    resultText.textContent = menus[index];
+    resultBox.classList.add('highlight');
+
+    setTimeout(() => resultBox.classList.remove('highlight'), 600);
+  }
+
+  function toggleList() {
+    const list = document.getElementById('menuList');
+    list.classList.toggle('open');
+
+    if (list.classList.contains('open') && list.innerHTML === '') {
+      list.innerHTML = '<p>현재 등록된 메뉴</p><ul>' +
+        menus.map(m => `<li>${m}</li>`).join('') +
+        '</ul>';
+    }
+  }
+</script>
+
+</body>
+</html>
