@@ -16,23 +16,26 @@
       font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
       background: #f5f5f0;
       min-height: 100vh;
+      min-height: 100dvh; /* 모바일 주소창 포함 정확한 높이 */
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 16px;
     }
 
     .card {
       background: #ffffff;
       border-radius: 24px;
-      padding: 48px 40px;
-      width: 360px;
+      padding: 40px 28px;
+      width: 100%;
+      max-width: 420px;
       text-align: center;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
     }
 
     /* ===== 제목 ===== */
     .title {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.08em;
       color: #aaa;
@@ -41,10 +44,10 @@
     }
 
     .subtitle {
-      font-size: 26px;
+      font-size: 22px;
       font-weight: 700;
       color: #222;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
     /* ===== 결과 표시 박스 ===== */
@@ -53,8 +56,8 @@
       border: 2px solid #eee;
       border-radius: 16px;
       padding: 28px 20px;
-      margin-bottom: 32px;
-      min-height: 100px;
+      margin-bottom: 24px;
+      min-height: 110px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -67,14 +70,14 @@
     }
 
     .result-text {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 700;
       color: #333;
       transition: all 0.3s;
     }
 
     .result-text.placeholder {
-      font-size: 16px;
+      font-size: 15px;
       color: #ccc;
       font-weight: 400;
     }
@@ -83,16 +86,18 @@
     .btn {
       display: inline-block;
       width: 100%;
-      padding: 16px;
+      padding: 18px;          /* 모바일 터치 영역 확보 */
       background: #ff6b35;
       color: #fff;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 700;
       border: none;
       border-radius: 14px;
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
       letter-spacing: 0.03em;
+      -webkit-tap-highlight-color: transparent; /* iOS 탭 하이라이트 제거 */
+      touch-action: manipulation;               /* 더블탭 줌 방지 */
     }
 
     .btn:hover {
@@ -101,15 +106,18 @@
 
     .btn:active {
       transform: scale(0.97);
+      background: #e85d2a;
     }
 
     /* ===== 메뉴 목록 표시 ===== */
     .menu-list-toggle {
-      margin-top: 28px;
+      margin-top: 24px;
+      padding: 8px 0;         /* 모바일 터치 영역 확보 */
       font-size: 13px;
       color: #bbb;
       cursor: pointer;
       user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .menu-list-toggle:hover {
@@ -118,7 +126,7 @@
 
     .menu-list {
       display: none;
-      margin-top: 16px;
+      margin-top: 12px;
       text-align: left;
       background: #fafafa;
       border-radius: 12px;
@@ -146,7 +154,7 @@
       background: #fff;
       border: 1px solid #eee;
       border-radius: 8px;
-      padding: 4px 12px;
+      padding: 5px 12px;
       font-size: 13px;
       color: #555;
     }
